@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 //@RibbonClient(name="currency-conversion-service", configuration=CurrencyServiceRibbonConfiguration.class )
 public class CurrencyConversionService {
 
+	Logger logger = LoggerFactory.getLogger(CurrencyConversionService.class);
+	
 	@Autowired
 	CurrencyExchangeServiceProxy proxy;
 	
@@ -25,6 +29,8 @@ public class CurrencyConversionService {
 			@PathVariable BigDecimal quantity){
 		
 		CurrencyConversionBean response = proxy.retriveExchangeValue(from, to);
+		
+		logger.info("{}", response);
 		
 		return new CurrencyConversionBean(response.getId(),from,to,response.getConversionMultiple(),quantity.multiply(response.getConversionMultiple()),quantity,response.getPort());
 		
