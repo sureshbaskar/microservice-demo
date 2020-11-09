@@ -1,0 +1,40 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: turbine
+    version: v1
+  name: turbine
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: turbine
+      version: v1
+  template: 
+    metadata: 
+      labels: 
+        app: turbine
+        version: v1
+    spec: 
+      containers: 
+        - 
+          image: "kapilshekharraina/turbine:latest"
+          imagePullPolicy: Always
+          name: turbine
+          ports: 
+          - containerPort: 9093
+          - containerPort: 8855
+          env:
+            - name: turbine.activeprofiles
+              value: "startup, dev"
+            - name: turbine.configserver.labels
+              value: "vbconfigs" 
+          resources:
+            requests:
+                memory: "256Mi"
+                cpu: "300m"
+            limits:
+                memory: "512Mi"
+                cpu: "800m" 
