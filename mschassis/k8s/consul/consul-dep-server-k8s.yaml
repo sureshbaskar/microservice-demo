@@ -1,0 +1,136 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: consul-server-1
+    version: v1
+  name: consul-server-1
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: consul-server-1
+      version: v1
+  template: 
+    metadata: 
+      labels: 
+        app: consul-server-1
+        version: v1
+    spec: 
+      containers: 
+        - 
+          image: consul:latest
+          imagePullPolicy: IfNotPresent
+          name: consul-server-1
+          command: ["consul"]
+          args: ["agent","-server", "-retry-join","consul-server-bootstrap", "-client", "0.0.0.0","-data-dir","/etc/data"]
+          resources:
+            requests:
+                memory: "256Mi"
+                cpu: "200m"
+            limits:
+                memory: "512Mi"
+                cpu: "400m"
+          volumeMounts:
+            - mountPath: /etc/data
+              name: consul-data        
+      volumes:
+       - name: consul-data
+         persistentVolumeClaim:
+            claimName: consul-pvc
+#       - name: consul-data
+#         hostPath:
+#            path: /work/sharedmount/consul/data/agent/3
+#            type: DirectoryOrCreate               
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: consul-server-2
+    version: v1
+  name: consul-server-2
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: consul-server-2
+      version: v1
+  template: 
+    metadata: 
+      labels: 
+        app: consul-server-2
+        version: v1
+    spec: 
+      containers: 
+        - 
+          image: consul:latest
+          imagePullPolicy: IfNotPresent
+          name: consul-server-2
+          command: ["consul"]
+          args: ["agent","-server", "-retry-join","consul-server-bootstrap", "-client", "0.0.0.0","-data-dir","/etc/data"]
+          resources:
+            requests:
+                memory: "256Mi"
+                cpu: "200m"
+            limits:
+                memory: "512Mi"
+                cpu: "400m"
+          volumeMounts:
+            - mountPath: /etc/data
+              name: consul-data        
+      volumes:
+       - name: consul-data
+         persistentVolumeClaim:
+            claimName: consul-pvc
+#       - name: consul-data
+#         hostPath:
+#            path: /work/sharedmount/consul/data/agent/3
+#            type: DirectoryOrCreate             
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: consul-server-3
+    version: v1
+  name: consul-server-3
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: consul-server-3
+      version: v1
+  template: 
+    metadata: 
+      labels: 
+        app: consul-server-3
+        version: v1
+    spec: 
+      containers: 
+        - 
+          image: consul:latest
+          imagePullPolicy: IfNotPresent
+          name: consul-server-3
+          command: ["consul"]
+          args: ["agent","-server", "-retry-join","consul-server-bootstrap", "-client", "0.0.0.0","-data-dir","/etc/data"]
+          resources:
+            requests:
+                memory: "256Mi"
+                cpu: "200m"
+            limits:
+                memory: "512Mi"
+                cpu: "400m"
+          volumeMounts:
+            - mountPath: /etc/data
+              name: consul-data        
+      volumes:
+       - name: consul-data
+         persistentVolumeClaim:
+            claimName: consul-pvc
+#       - name: consul-data
+#         hostPath:
+#            path: /work/sharedmount/consul/data/agent/3
+#            type: DirectoryOrCreate  

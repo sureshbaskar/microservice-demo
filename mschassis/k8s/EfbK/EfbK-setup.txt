@@ -1,0 +1,33 @@
+Install HELM
+curl -fsSL -o helm.gz https://get.helm.sh/helm-v3.1.2-linux-amd64.tar.gz
+
+curl -LO https://storage.googleapis.com/kubernetes-helm/helm-v2.8.2-linux-amd64.tar.gz
+tar -xvf helm-v2.8.2-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/
+
+
+mkdir -p /mnt/data/elastic/efk-master && kubectl create -f elastic-pv-master-hostpath.yaml
+mkdir -p /mnt/data/elastic/efk-data && kubectl create -f elastic-pv-data-hostpath.yaml
+
+
+kubectl create namespace logs
+
+
+helm install elasticsearch stable/elasticsearch --namespace=elastic \
+--set client.replicas=1 \
+--set master.replicas=1 \
+--set cluster.env.MINIMUM_MASTER_NODES=1 \
+--set cluster.env.RECOVER_AFTER_MASTER_NODES=1 \
+--set cluster.env.EXPECTED_MASTER_NODES=1 \
+--set data.replicas=1 \
+--set data.heapSize=300m \
+--set master.persistence.storageClass=elasticsearch-master-sc \
+--set master.persistence.size=5Gi \
+--set data.persistence.storageClass=elasticsearch-data-sc \
+--set data.persistence.size=5Gi
+
+
+helm install fluent-bit stable/fluent-bit --namespace=logs --set backend.type=es --set backend.es.host=elasticsearch-client  (daemonset)
+https://docs.fluentbit.io/manual/installation/kubernetes
+
+helm install kibana stable/kibana --namespace=kibana --set env.ELASTICSEARCH_HOSTS=http://10.101.13.126:9200 --set service.type=NodePort --set service.nodePort=31000

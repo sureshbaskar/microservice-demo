@@ -1,0 +1,46 @@
+master-- Master : 192.168.56.105 and 10.0.2.8
+Node01-- Node01 : 192.168.56.108 and 10.0.2.10
+Node02-- Node02 : 192.168.56.106 and 10.0.2.9
+		mfs		: 192.168.56.109 and 10.0.2.11
+
+
+https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/
+
+kubeadm join 10.0.2.8:6443 --token ajrfna.0rsq79dle4iyg69h --discovery-token-ca-cert-hash sha256:6f16fd703c360802fff2fc59d133d53f042e55d2d191fcf56db98ec6982b3604
+
+kubectl config set-cluster k8svb --insecure-skip-tls-verify=true --server=https://192.168.56.105:6443
+kubectl config set-credentials clusteradmin --client-certificate=client-certificate --client-key=client-key
+kubectl config set-context k8svb --cluster=k8svb --user=clusteradmin
+kubectl config use-context k8svb
+
+
+------ Mounts From Host ------------
+https://gist.github.com/estorgio/1d679f962e8209f8a9232f7593683265
+mount -t vboxsf sharedmount /work/sharedmount
+
+sudo nano /etc/fstab
+sharedmount	/work/sharedmount	vboxsf	defaults	0	0
+sudo nano /etc/modules
+
+------K8S Dashboard ---------
+https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/
+https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+
+---------- NFS -------------------------
+https://vitux.com/install-nfs-server-and-client-on-ubuntu/
+
+root@mfs-vm:/mnt/k8smnt# cat /etc/exports
+# /etc/exports: the access control list for filesystems which may be exported
+#               to NFS clients.  See exports(5).
+#
+# Example for NFSv2 and NFSv3:
+# /srv/homes       hostname1(rw,sync,no_subtree_check) hostname2(ro,sync,no_subtree_check)
+#
+# Example for NFSv4:
+# /srv/nfs4        gss/krb5i(rw,sync,fsid=0,crossmnt,no_subtree_check)
+# /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
+
+/mnt/k8smnt 10.0.2.8(rw,sync,no_subtree_check,no_root_squash)
+/mnt/k8smnt 10.0.2.10(rw,sync,no_subtree_check,no_root_squash)
+/mnt/k8smnt 10.0.2.9(rw,sync,no_subtree_check,no_root_squash)
+
