@@ -29,7 +29,7 @@ public class CurrencyExchangeServiceController {
 	private ExchangeValueRespository exchangeValueRepository;
 	
 	@GetMapping("/currency-exchange/from/{from}/to/{to}")
-	@HystrixCommand(fallbackMethod="defaultretriveExchangeValue")
+	//@HystrixCommand(fallbackMethod="defaultretriveExchangeValue")
 	public ExchangeValue retriveExchangeValue(@PathVariable String from,@PathVariable String to){
 		ExchangeValue exchangeValue = exchangeValueRepository.findByFromAndTo(from, to);
 		if(exchangeValue == null)
@@ -38,9 +38,11 @@ public class CurrencyExchangeServiceController {
 		return exchangeValue;
 	}
 	
-	public ExchangeValue defaultretriveExchangeValue(@PathVariable String from,@PathVariable String to) {
-		return new ExchangeValue(1001L,"USD","INR",BigDecimal.valueOf(65));
-	}
+	/*
+	 * public ExchangeValue defaultretriveExchangeValue(@PathVariable String
+	 * from,@PathVariable String to) { return new
+	 * ExchangeValue(1001L,"USD","INR",BigDecimal.valueOf(65)); }
+	 */
 	
 	@PostMapping ("/currency-exchange")
 	public ResponseEntity saveExchangeValue(@RequestBody ExchangeValue exchangeValue) {
