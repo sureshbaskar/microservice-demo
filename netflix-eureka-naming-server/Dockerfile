@@ -1,4 +1,4 @@
-FROM java:8
-EXPOSE 8761:8761
-ADD target/netflix-eureka-naming-server-0.0.1-SNAPSHOT.jar netflix-eureka-naming-server.jar
-ENTRYPOINT ["java","-jar","netflix-eureka-naming-server.jar"]
+FROM fabric8/java-alpine-openjdk8-jdk
+ADD target/*.jar app.jar
+RUN touch /app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

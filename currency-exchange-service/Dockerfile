@@ -1,4 +1,4 @@
-FROM java:8
-EXPOSE 8000:8000
-ADD target/currency-exchange-service-0.0.1-SNAPSHOT.jar currency-exchange-service.jar
-ENTRYPOINT ["java","-jar","currency-exchange-service.jar"]
+FROM fabric8/java-alpine-openjdk8-jdk
+ADD target/*.jar app.jar
+RUN touch /app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
